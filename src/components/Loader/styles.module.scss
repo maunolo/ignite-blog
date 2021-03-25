@@ -1,0 +1,45 @@
+.dotTyping {
+  position: relative;
+  left: -8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 5px;
+  color: var(--pink-600);
+  box-shadow: 8px 0 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600), 28px 0 0 0 var(--pink-600);
+
+}
+
+.animated {
+  animation: dotTyping 2s infinite linear;
+}
+
+@keyframes dotTyping {
+  0% {
+    box-shadow: 8px 0 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600),
+      28px 0 0 0 var(--pink-600);
+  }
+  16.667% {
+    box-shadow: 8px -10px 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600),
+      28px 0 0 0 var(--pink-600);
+  }
+  33.333% {
+    box-shadow: 8px 0 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600),
+      28px 0 0 0 var(--pink-600);
+  }
+  50% {
+    box-shadow: 8px 0 0 0 var(--pink-600), 18px -10px 0 0 var(--pink-600),
+      28px 0 0 0 var(--pink-600);
+  }
+  66.667% {
+    box-shadow: 8px 0 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600),
+      28px 0 0 0 var(--pink-600);
+  }
+  83.333% {
+    box-shadow: 8px 0 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600),
+      28px -10px 0 0 var(--pink-600);
+  }
+  100% {
+    box-shadow: 8px 0 0 0 var(--pink-600), 18px 0 0 0 var(--pink-600),
+      28px 0 0 0 var(--pink-600);
+  }
+}
