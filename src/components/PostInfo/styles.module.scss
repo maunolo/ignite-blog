@@ -1,0 +1,26 @@
+.container {
+  font-size: 0.85rem;
+  line-height: 1rem;
+  font-weight: 400;
+  margin-top: 1.56rem;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.5rem;
+  }
+
+  time {
+    margin-right: 1.5rem;
+  }
+
+  span {
+    & + svg {
+      margin-left: 1.5rem;
+
+    }
+  }
+}

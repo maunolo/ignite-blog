@@ -1,15 +1,14 @@
 import { GetStaticProps } from 'next';
 
+import Link from 'next/link';
+
 import Prismic from '@prismicio/client';
 
-import { FiCalendar, FiUser } from 'react-icons/fi';
-
-import { format } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
 import { useState } from 'react';
 import styles from './home.module.scss';
 import { getPrismicClient } from '../services/prismic';
 import { Loader } from '../components/Loader';
+import { PostInfo } from '../components/PostInfo';
 
 interface Post {
   uid?: string;
@@ -52,24 +51,20 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   return (
     <div className={styles.container}>
       <header className={styles.heading}>
-        <img src="/logo.svg" alt="spacetraveling" />
+        <img src="/logo.svg" alt="logo" />
       </header>
       <main className={styles.posts}>
         {posts?.map(post => (
-          <a key={post.uid} href={`/posts/${post.uid}`}>
-            <h1>{post.data.title}</h1>
-            <p>{post.data.subtitle}</p>
-            <div className={styles.postInfo}>
-              <FiCalendar />
-              <time>
-                {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
-                  locale: ptBR,
-                })}
-              </time>
-              <FiUser />
-              <span>{post.data.author}</span>
-            </div>
-          </a>
+          <Link key={post.uid} href={`/post/${post.uid}`}>
+            <a>
+              <h1>{post.data.title}</h1>
+              <p>{post.data.subtitle}</p>
+              <PostInfo
+                date={post.first_publication_date}
+                author={post.data.author}
+              />
+            </a>
+          </Link>
         ))}
       </main>
       {next_page && (
