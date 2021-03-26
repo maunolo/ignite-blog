@@ -1,1 +1,43 @@
-// TODO
+.postBanner {
+  height: 400px;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.postContent {
+  display: flex;
+  max-width: 720px;
+  flex-direction: column;
+  margin: 80px auto;
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  section {
+    margin-top: 4rem;
+    width: 100%;
+
+    h2 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      line-height: 3.15rem;
+      text-align: justify;
+      margin-bottom: 3rem;
+    }
+
+    p {
+      width: 100%;
+      text-align: justify;
+      color: var(--gray-300);
+
+      & + p {
+        margin-top: 2rem;
+      }
+    }
+  }
+}
+

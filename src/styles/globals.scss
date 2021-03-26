@@ -15,6 +15,7 @@
   --gray-300: #D7D7D7;
   --gray-400: #BBBBBB;
   --gray-600: #999999;
+  --gray-750: #666666;
   --gray-850: #1A1D23;
 }
 
@@ -33,6 +34,7 @@
 body {
   background: var(--gray-850);
   color: var(--white);
+  overflow-x: hidden;
 }
 
 
@@ -58,11 +60,11 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--gray-850);
+  background: var(--gray-400);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--gray-400);
+  background: var(--gray-750);
   border-radius: 4px;
 }
 
