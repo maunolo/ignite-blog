@@ -6,42 +6,57 @@ import ptBR from 'date-fns/locale/pt-BR';
 import styles from './styles.module.scss';
 
 interface PostInfoProps {
-  date?: string;
+  publicationDate?: string;
+  lastUpdateDate?: string;
   author?: string;
   timeToRead?: string;
 }
 
 export function PostInfo({
-  date,
+  publicationDate,
+  lastUpdateDate,
   author,
   timeToRead,
 }: PostInfoProps): JSX.Element {
   return (
-    <div className={styles.container}>
-      {date && (
-        <>
-          <FiCalendar />
-          <time>
-            {format(new Date(date), 'dd MMM yyyy', {
+    <>
+      <div className={styles.container}>
+        {publicationDate && (
+          <>
+            <FiCalendar />
+            <time>
+              {format(new Date(publicationDate), 'dd MMM yyyy', {
+                locale: ptBR,
+              })}
+            </time>
+          </>
+        )}
+
+        {author && (
+          <>
+            <FiUser />
+            <span>{author}</span>
+          </>
+        )}
+
+        {timeToRead && (
+          <>
+            <FiClock />
+            <span>{timeToRead}</span>
+          </>
+        )}
+      </div>
+      {lastUpdateDate && (
+        <span className={styles.lastUpdate}>
+          {format(
+            new Date(lastUpdateDate),
+            "'* editado em' dd MMM yyyy', às' HH:mm",
+            {
               locale: ptBR,
-            })}
-          </time>
-        </>
+            }
+          )}
+        </span>
       )}
-
-      {author && (
-        <>
-          <FiUser />
-          <span>{author}</span>
-        </>
-      )}
-
-      {timeToRead && (
-        <>
-          <FiClock />
-          <span>{timeToRead}</span>
-        </>
-      )}
-    </div>
+    </>
   );
 }

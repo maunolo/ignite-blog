@@ -1,1 +1,24 @@
-// TODO
+.container {
+  max-width: 720px;
+}
+
+.exitPreview {
+  margin-top: 5rem;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+
+  a {
+    background: var(--gray-200);
+    color: #0f0f0f;
+    padding: 1.125rem 5rem;
+    font-weight: 600;
+    border-radius: 4px;
+
+    transition: filter 0.2s;
+
+    &:hover {
+      filter: brightness(0.8);
+    }
+  }
+}

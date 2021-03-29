@@ -9,7 +9,6 @@
 
 .postContent {
   display: flex;
-  max-width: 720px;
   flex-direction: column;
   margin: 80px auto;
 
@@ -37,6 +36,41 @@
       & + p {
         margin-top: 2rem;
       }
+    }
+  }
+
+  hr {
+    margin: 3.75rem 0 3rem;
+    border-top: 0px solid #d7d7d7;
+    opacity: 0.1;
+  }
+
+  nav {
+    margin-bottom: 5rem;
+
+    .prevPost {
+      float: left;
+      text-align: left;
+    }
+
+    .nextPost {
+      float: right;
+      text-align: right;
+    }
+
+    h2 {
+      font-weight: 400;
+      font-size: 1.125rem;
+      line-height: 1.36rem;
+      color: var(--gray-200);
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      color: var(--pink-600);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.125rem;
     }
   }
 }

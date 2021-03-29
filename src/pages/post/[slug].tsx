@@ -1,16 +1,20 @@
+/* eslint-disable react/no-danger */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import { v5 as uuidv5 } from 'uuid';
+import Link from 'next/link';
 
 import Prismic from '@prismicio/client';
 
 import { useRouter } from 'next/router';
+import { RichText } from 'prismic-dom';
 import { getPrismicClient } from '../../services/prismic';
 
 import Header from '../../components/Header';
 
 import styles from './post.module.scss';
+import commonStyles from '../../styles/common.module.scss';
 import { PostInfo } from '../../components/PostInfo';
+import { Comments } from '../../components/Comments';
 
 interface PostContent {
   heading: string;
@@ -19,8 +23,11 @@ interface PostContent {
   }[];
   htmlBody?: string;
 }
+
 interface Post {
+  uid?: string;
   first_publication_date: string | null;
+  last_publication_date?: string | null;
   data: {
     title: string;
     banner: {
@@ -33,11 +40,26 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  nextPost?: Post | null;
+  prevPost?: Post | null;
+  preview?: boolean;
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({
+  post,
+  nextPost,
+  prevPost,
+  preview,
+}: PostProps): JSX.Element {
   const router = useRouter();
-  const timeToRead = '4 min';
+  const allPostText = post.data.content
+    .map(content => {
+      return content.body.map(body => body.text).join(' ');
+    })
+    .join(' ');
+  const wordsCount = allPostText.split(' ').length;
+
+  const timeToRead = `${Math.ceil(wordsCount / 200)} min`;
 
   if (router.isFallback) {
     return <div>Carregando...</div>;
@@ -52,26 +74,52 @@ export default function Post({ post }: PostProps): JSX.Element {
       <div className={styles.postBanner}>
         <img src={post.data.banner.url} alt={post.data.title} />
       </div>
-      <main className={styles.postContent}>
+      <main className={`${styles.postContent} ${commonStyles.container}`}>
         <h1>{post.data.title}</h1>
         <PostInfo
-          date={post.first_publication_date}
+          publicationDate={post.first_publication_date}
           author={post.data.author}
           timeToRead={timeToRead}
+          lastUpdateDate={post.last_publication_date}
         />
         {post.data.content.map(section => {
+          const htmlBody = RichText.asHtml(section.body);
+
           return (
             <section key={section.heading}>
               <h2>{section.heading}</h2>
-              {/* <div dangerouslySetInnerHTML={{ __html: section.htmlBody }} /> */}
-              {section.body.map(paragraph => (
-                <p key={`${uuidv5(paragraph.text, uuidv5.URL)}`}>
-                  {paragraph.text}
-                </p>
-              ))}
+              <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
             </section>
           );
         })}
+        <hr />
+        <nav>
+          {prevPost && (
+            <div className={styles.prevPost}>
+              <h2>{prevPost.data.title}</h2>
+              <Link href={`/post/${prevPost.uid}`}>
+                <a>Post anterior</a>
+              </Link>
+            </div>
+          )}
+
+          {nextPost && (
+            <div className={styles.nextPost}>
+              <h2>{nextPost.data.title}</h2>
+              <Link href={`/post/${nextPost.uid}`}>
+                <a>Próximo post</a>
+              </Link>
+            </div>
+          )}
+        </nav>
+        <Comments />
+        {preview && (
+          <aside className={commonStyles.exitPreview}>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </main>
     </>
   );
@@ -88,32 +136,46 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths: reponse.results.map(post => ({ params: { slug: post.uid } })),
-    fallback: 'blocking',
+    fallback: true,
   };
 };
 
-export const getStaticProps: GetStaticProps = async context => {
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  preview = false,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID(
-    'post',
-    String(context.params.slug),
-    {}
-  );
+  const post = await prismic.getByUID('post', String(params.slug), {
+    ref: previewData?.ref ?? null,
+  });
 
-  const post = {
-    ...response,
-    data: {
-      ...response.data,
-      content: response.data.content.map((section: PostContent) => ({
-        ...section,
-        // htmlBody: RichText.asHtml(section.body),
-      })),
-    },
-  };
+  const prevPost =
+    (
+      await prismic.query([Prismic.predicates.at('document.type', 'post')], {
+        fetch: ['post.title'],
+        pageSize: 1,
+        after: post.id,
+        orderings: '[document.first_publication_date]',
+      })
+    ).results[0] || null;
+
+  const nextPost =
+    (
+      await prismic.query([Prismic.predicates.at('document.type', 'post')], {
+        fetch: ['post.title'],
+        pageSize: 1,
+        after: post.id,
+        orderings: '[document.first_publication_date desc]',
+      })
+    ).results[0] || null;
 
   return {
     props: {
       post,
+      nextPost,
+      prevPost,
+      preview,
     },
     revalidate: 60 * 60 * 12, // 12 hours
   };
